@@ -1,3 +1,4 @@
+using FlashCardBlazor;
 using FlashCardBlazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<FlashcardService>();
 
 var app = builder.Build();
 

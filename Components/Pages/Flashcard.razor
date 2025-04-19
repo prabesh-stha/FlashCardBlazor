@@ -1,0 +1,88 @@
+﻿@page "/flashcard"
+@using FlashCardBlazor.Data
+@inject FlashcardService flashcardService
+@rendermode InteractiveServer
+
+<PageTitle>Study</PageTitle>
+
+<h2 class="text-center my-3">Flashcard Study</h2>
+
+@if (flashcards.Count == 0)
+{
+    <h2 class="fw-bold">No flashcard found.</h2>
+    <a href="/add">Do you want to add new flashcard?</a>
+}
+else
+{
+    <div @onclick="Toggle" class="card p-4 rounded-4 shadow-sm mx-auto" style="width: 400px; height: 300px; cursor: pointer; transition: all 0.3s ease;">
+        <div class="w-100 h-100">
+            <div class="text-muted text-center mb-2">
+                <h3 class="fw-bold">@(showAnswer ? "Answer" : "Question")</h3>
+            </div>
+            <div class="fs-4 fw-semibold h-75 d-flex justify-content-center align-items-center">
+                <p> @(showAnswer ? flashcards[currentIndex].Answer : flashcards[currentIndex].Question)</p>
+            </div>
+        </div>
+    </div>
+<div class="d-flex justify-content-center">
+        <div class="d-flex text-center justify-content-between align-items-center mt-3 w-75">
+            @if (!HidePrevious)
+            {
+                <i class="bi bi-arrow-left fs-2 text-primary" style="cursor: pointer;" @onclick="Previous"></i>
+            }
+            else
+            {
+                <div></div>
+            }
+
+            @if (!HideNext)
+            {
+                <i class="bi bi-arrow-right fs-2 text-primary" style="cursor: pointer;" @onclick="Next"></i>
+            }
+            else
+            {
+                <div></div>
+            }
+        </div>
+</div>
+
+}
+
+@code {
+    private List<FlashcardModel> flashcards = new();
+    private bool showAnswer = false;
+    private int currentIndex = 0;
+
+    private bool HidePrevious => currentIndex == 0;
+
+    private bool HideNext => currentIndex == flashcards.Count - 1;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        flashcards = await flashcardService.GetAllFlashCard();
+    }
+
+    private void Toggle()
+    {
+        showAnswer = !showAnswer;
+    }
+
+    private void Next()
+    {
+        if (!HideNext)
+        {
+            currentIndex++;
+            showAnswer = false;
+        }
+    }
+
+    private void Previous()
+    {
+        if (!HidePrevious)
+        {
+            currentIndex--;
+            showAnswer = false;
+        }
+    }
+}

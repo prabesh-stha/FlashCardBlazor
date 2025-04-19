@@ -1,0 +1,26 @@
+﻿@page "/add"
+@inject FlashcardService flashcardService
+@inject NavigationManager navigationManager	
+@using FlashCardBlazor.Data
+@rendermode InteractiveServer
+<PageTitle>Add Flashcard</PageTitle>
+
+<h3>Add Flashcard</h3>
+
+<input @bind="flashcard.Question" placeholder="Question" class="form-control mb-3" />
+<input @bind="flashcard.Answer" placeholder="Answer" class="form-control mb-3" />
+<button type="button" class="btn btn-primary" @onclick="AddFlashcard">Add Flashcard</button>
+
+
+@code {
+	private FlashcardModel flashcard = new();
+
+
+	private async Task AddFlashcard()
+	{
+		await flashcardService.AddFlashcard(flashcard);
+		flashcard = new();
+		navigationManager.NavigateTo("/");
+	}
+
+}

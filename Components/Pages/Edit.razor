@@ -1,0 +1,39 @@
+﻿@page "/edit/{Id:int}"
+@using FlashCardBlazor.Data
+@inject FlashcardService flashcardService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+<PageTitle>Edit Flashcard</PageTitle>
+
+<h3>Edit</h3>
+@if(flashcard == null)
+{
+	<p>Loading...</p> 
+}
+else
+{
+	<input @bind="flashcard.Question" placeholder="Question" class="form-control mb-3" />
+	<input @bind="flashcard.Answer" placeholder="Answer" class="form-control mb-3" />
+	<button type="button" class="btn btn-primary" @onclick="UpdateFlashcard">Edit</button>
+}
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	private FlashcardModel? flashcard;
+
+	protected override async Task OnInitializedAsync()
+	{
+		flashcard = await flashcardService.GetFlashCardById(Id);
+	}
+
+	private async Task UpdateFlashcard()
+	{
+		if(flashcard != null)
+		{
+			await flashcardService.EditFlashcard(flashcard);
+			navigationManager.NavigateTo("/");
+		}
+	}
+
+}
